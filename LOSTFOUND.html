@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lost & Found Management System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-hover: #4338CA;
+            --secondary: #10B981;
+            --danger: #EF4444;
+            --danger-hover: #DC2626;
+            --bg-color: #F3F4F6;
+            --card-bg: #FFFFFF;
+            --text-main: #1F2937;
+            --text-muted: #6B7280;
+            --border-color: #E5E7EB;
+            --radius: 12px;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+
+        .header-title {
+            text-align: center;
+            font-weight: 600;
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 40px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .header-title i {
+            margin-right: 10px;
+        }
+
+        .grid-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+        
+        .card h2 i {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            background-color: #F9FAFB;
+            transition: var(--transition);
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            background-color: #FFFFFF;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        button:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+        }
+
+        .btn-danger:hover {
+            background: var(--danger-hover);
+        }
+        
+        .btn-secondary {
+            background: var(--secondary);
+        }
+        
+        .btn-secondary:hover {
+            background: #059669;
+        }
+
+        /* File Input Styling */
+        input[type="file"] {
+            padding: 10px;
+            background: #F9FAFB;
+            cursor: pointer;
+        }
+        
+        input[type="file"]::file-selector-button {
+            border: none;
+            background: var(--primary);
+            padding: 8px 16px;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-right: 10px;
+        }
+        
+        input[type="file"]::file-selector-button:hover {
+            background: var(--primary-hover);
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        /* Output & Table Styling */
+        #output {
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+        
+        #output h2 {
+            margin-top: 0;
+            border-bottom: none;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 15px;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background: var(--primary);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+        }
+
+        td {
+            background: white;
+            color: var(--text-main);
+            vertical-align: middle;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        tr:hover td {
+            background-color: #F9FAFB;
+        }
+
+        table img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        table img:hover {
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 768px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1 class="header-title"><i class="fa-solid fa-box-open"></i> Lost & Found System</h1>
+
+    <div class="grid-container">
+        
+        <!-- Report Item Card -->
+        <div class="card" style="grid-row: span 2;">
+            <h2><i class="fa-solid fa-plus-circle"></i> Report Item</h2>
+            
+            <div class="form-group">
+                <input type="text" id="name" placeholder="Item Name">
+            </div>
+            
+            <div class="form-group">
+                <textarea id="description" placeholder="Provide a detailed description..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <input type="text" id="location" placeholder="Location where lost/found">
+            </div>
+            
+            <div class="form-group">
+                <input type="date" id="date">
+            </div>
+            
+            <div class="form-group">
+                <select id="status">
+                    <option value="" disabled selected>Select Status</option>
+                    <option value="Lost">Lost</option>
+                    <option value="Found">Found</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <input type="file" id="image" accept="image/*">
+            </div>
+            
+            <button onclick="reportItem()"><i class="fa-solid fa-paper-plane"></i> Submit Report</button>
+        </div>
+
+        <!-- Search & Delete Column -->
+        <div class="grid-container" style="display: flex; flex-direction: column; gap: 30px;">
+            
+            <!-- Search Item Card -->
+            <div class="card">
+                <h2><i class="fa-solid fa-magnifying-glass"></i> Search Item</h2>
+                <div class="form-group">
+                    <input type="text" id="searchId" placeholder="Enter Item ID">
+                </div>
+                <button onclick="getItem()"><i class="fa-solid fa-search"></i> Find Item</button>
+            </div>
+
+            <!-- Delete Item Card -->
+            <div class="card">
+                <h2><i class="fa-solid fa-trash"></i> Delete Item</h2>
+                <div class="form-group">
+                    <input type="text" id="deleteId" placeholder="Enter Item ID to delete">
+                </div>
+                <button class="btn-danger" onclick="deleteItem()"><i class="fa-solid fa-trash-can"></i> Remove Item</button>
+            </div>
+            
+        </div>
+
+        <!-- View All & Output Card -->
+        <div class="card full-width">
+            <h2><i class="fa-solid fa-list"></i> Database Records</h2>
+            <button class="btn-secondary" onclick="getAllItems()" style="width: auto; margin-bottom: 20px;"><i class="fa-solid fa-database"></i> Fetch All Items</button>
+            
+            <div id="output">
+                <!-- Data will be dynamically injected here -->
+            </div>
+        </div>
+
+    </div>
+
+<script>
+
+const API="https://m1eeuyq7i4.execute-api.ap-south-1.amazonaws.com/prod";
+
+function reportItem(){
+
+const file=document.getElementById("image").files[0];
+
+if(file==null){
+
+alert("Select Image");
+
+return;
+
+}
+
+const reader=new FileReader();
+
+reader.onload=function(){
+
+const image=reader.result.split(",")[1];
+
+const data={
+
+name:document.getElementById("name").value,
+
+description:document.getElementById("description").value,
+
+location:document.getElementById("location").value,
+
+date:document.getElementById("date").value,
+
+status:document.getElementById("status").value,
+
+image:image
+
+};
+
+fetch(API+"/report",{
+
+method:"POST",
+
+headers:{
+
+"Content-Type":"application/json"
+
+},
+
+body:JSON.stringify(data)
+
+})
+
+.then(response=>response.json())
+
+.then(data=>{
+
+alert(data.message);
+
+});
+
+}
+
+reader.readAsDataURL(file);
+
+}
+
+function getAllItems(){
+
+fetch(API+"/items")
+
+.then(response=>response.json())
+
+.then(data=>{
+
+let html="<h2>All Items</h2>";
+
+html+="<table>";
+
+html+="<tr>";
+
+html+="<th>Item ID</th>";
+
+html+="<th>Name</th>";
+
+html+="<th>Description</th>";
+
+html+="<th>Location</th>";
+
+html+="<th>Date</th>";
+
+html+="<th>Status</th>";
+
+html+="<th>Image</th>";
+
+html+="</tr>";
+
+data.forEach(function(item){
+
+html+="<tr>";
+
+html+="<td>"+item.itemId+"</td>";
+
+html+="<td>"+item.name+"</td>";
+
+html+="<td>"+item.description+"</td>";
+
+html+="<td>"+item.location+"</td>";
+
+html+="<td>"+item.date+"</td>";
+
+html+="<td>"+item.status+"</td>";
+
+html+="<td><img src='"+item.image+"'></td>";
+
+html+="</tr>";
+
+});
+
+html+="</table>";
+
+document.getElementById("output").innerHTML=html;
+
+});
+
+}
+
+function getItem(){
+
+let id=document.getElementById("searchId").value;
+
+fetch(API+"/items?itemId="+id)
+
+.then(response=>response.json())
+
+.then(item=>{
+
+let html="<h2>Item Details</h2>";
+
+html+="<table>";
+
+html+="<tr>";
+
+html+="<th>Item ID</th>";
+
+html+="<th>Name</th>";
+
+html+="<th>Description</th>";
+
+html+="<th>Location</th>";
+
+html+="<th>Date</th>";
+
+html+="<th>Status</th>";
+
+html+="<th>Image</th>";
+
+html+="</tr>";
+
+html+="<tr>";
+
+html+="<td>"+item.itemId+"</td>";
+
+html+="<td>"+item.name+"</td>";
+
+html+="<td>"+item.description+"</td>";
+
+html+="<td>"+item.location+"</td>";
+
+html+="<td>"+item.date+"</td>";
+
+html+="<td>"+item.status+"</td>";
+
+html+="<td><img src='"+item.image+"'></td>";
+
+html+="</tr>";
+
+html+="</table>";
+
+document.getElementById("output").innerHTML=html;
+
+});
+
+}
+
+function deleteItem(){
+
+let id=document.getElementById("deleteId").value;
+
+fetch(API+"/delete?itemId="+id,{
+
+method:"DELETE"
+
+})
+
+.then(response=>response.json())
+
+.then(data=>{
+
+alert(data.message);
+
+});
+
+}
+
+</script>
+
+</body>
+
+</html>
